@@ -1,0 +1,18 @@
+from __future__ import annotations
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+
+from app.config import DB_PATH
+
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_PATH}"
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}, future=True)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+
+def init_db() -> None:
+    from app.database.models import Conversation, Message, Feedback, DocumentRecord, Preference
+
+    Base.metadata.create_all(bind=engine)
